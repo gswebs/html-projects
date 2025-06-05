@@ -1,0 +1,143 @@
+body{
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+}
+section {
+    position: relative;
+}
+.hero{
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(245.05deg, #FDD3CA -15.39%, #FE9180 17.47%, #AC3093 47.34%, #470093 81.99%);
+}
+.wave-b {
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    bottom: 0px;
+    background: url("../img/wave.png");
+    z-index: 2;
+    height: 90px;
+    background-repeat: no-repeat;
+}
+.content {
+    z-index: 1;
+    position: relative;
+}
+.container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 80%;
+}
+
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.col-5 {
+    flex: 0 0 45%;
+    max-width: 45%;
+}
+
+.left {
+    margin-right: 5%;
+    padding-right: 50px;
+}
+.flip-container {
+    display: flex;
+    gap: 5px;
+}
+
+.card {
+    background-color: transparent;
+    width: 250px;
+    height: 250px;
+    perspective: 1000px;
+    display: inline-block;
+    margin: 3px;
+}
+
+.card > img {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    border-radius: 24px;
+    object-fit: cover;
+}
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    backface-visibility: hidden;
+    transition: transform 1s ease-in-out;
+    transform-style: preserve-3d;
+    transform-origin: center center;
+}
+.front-card, .back-card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.review {
+    background: #fff;
+    border-radius: 16px;
+    width: 150px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+.review .flag > img {
+    width: 24px;
+    height: auto;
+}
+.review h6{
+    margin: 0;
+}
+.star-rating {
+    display: inline-flex;
+    gap: 4px;
+    font-size: 14px;
+    color: #e0e0e0; /* Default star color */
+}
+
+.star-rating i.filled {
+  color: #50B37F; /* Gold */
+}
+
+.star-rating i.half {
+    position: relative;
+    color: #e0e0e0;
+}
+
+.star-rating i.half::before {
+    content: "\f005"; /* Unicode for solid star */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #ffc107;
+    position: absolute;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+}
+
+.right {
+    display: flex;
+    align-items: end;
+    gap: 3px;
+}
+.country{
+    font-size: 11px;
+}
