@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Cinematic Scroll Experience</title>
+
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+html, body{
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+  scroll-behavior: auto;
+}
+
+/* Smooth storytelling container */
+.story-wrapper{
+  scroll-snap-type:y mandatory;
+}
+
+section{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  scroll-snap-align:start;
+}
+
+h1{
+  font-size:clamp(48px,8vw,120px);
+  text-align:center;
+  line-height:1;
+  letter-spacing:-0.04em;
+}
+
+/* Sticky scene */
+.sticky{
+  height:200vh;
+}
+
+.sticky .inner{
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Video */
+video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* Overlay */
+.overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.9));
+}
+
+/* Product zoom */
+.product-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:30px;
+}
+
+.phone{
+  width:320px;
+  will-change:transform;
+}
+
+/* Frame animation */
+.frame-wrap img{
+  width:420px;
+  will-change:transform;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="story-wrapper">
+
+<!-- HERO -->
+<section>
+  <h1>Designed for Motion</h1>
+</section>
+
+<!-- CINEMATIC VIDEO -->
+<section class="sticky">
+  <div class="inner story">
+    <video id="scrollVideo" muted playsinline preload="auto">
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+  </div>
+</section>
+
+<!-- PRODUCT ZOOM -->
+<section class="sticky">
+  <div class="inner">
+    <div class="product-wrap">
+      <img class="phone" src="anti-aging.jpg" alt="iPhone">
+      <h1>iPhone Zoom</h1>
+    </div>
+  </div>
+</section>
+
+<!-- FRAME BY FRAME -->
+<section class="sticky">
+  <div class="inner">
+    <div class="frame-wrap">
+      <img id="frameImg" src="left.jpg" alt="Frame Sequence">
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* =======================
+   LENIS + GSAP SYNC
+======================= */
+
+const lenis = new Lenis({
+  smooth:true,
+  duration:1.2,
+  wheelMultiplier:1,
+  smoothTouch:false
+});
+
+function raf(time){
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+gsap.registerPlugin(ScrollTrigger);
+
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time)=>{
+  lenis.raf(time * 1000);
+});
+gsap.ticker.lagSmoothing(0);
+
+/* =======================
+   VIDEO SCRUB
+======================= */
+
+const video = document.getElementById("scrollVideo");
+video.pause();
+
+ScrollTrigger.create({
+  trigger: ".story",
+  start: "top top",
+  end: "bottom top",
+  scrub: 1,
+  pin:true,
+  onUpdate:self=>{
+    if(video.duration){
+      video.currentTime = self.progress * video.duration;
+    }
+  }
+});
+
+/* =======================
+   IPHONE ZOOM CINEMATIC
+======================= */
+
+gsap.fromTo(".phone",
+  { scale:1, y:80 },
+  {
+    scale:2,
+    y:-40,
+    ease:"none",
+    scrollTrigger:{
+      trigger:".product-wrap",
+      start:"top bottom",
+      end:"bottom top",
+      scrub:1,
+      pin:true
+    }
+  }
+);
+
+/* =======================
+   FRAME BY FRAME ENGINE
+======================= */
+
+const frames = 90;
+
+ScrollTrigger.create({
+  trigger:".frame-wrap",
+  start:"top bottom",
+  end:"bottom top",
+  scrub:1,
+  pin:true,
+  onUpdate:self=>{
+    let frame = Math.floor(self.progress * frames) + 1;
+    document.getElementById("frameImg").src =
+      `frame${frame}.jpg`;
+  }
+});
+
+</script>
+
+</body>
+</html>

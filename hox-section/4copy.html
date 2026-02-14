@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<section>
+    <div class="ginfographic-wrapper">
+        <div class="ginfographic-container">
+            <div class="goption-item gleft gtop" onclick="openPopup(0)">
+                <div class="goption-item-inner">
+                    <span class="goption-number">01</span>
+                    <span class="goption-title">In-Lab Synthesis and Controlled Harvesting </span>
+                </div>
+            </div>
+            <div class="goption-item gright gtop" onclick="openPopup(1)">
+                <div class="goption-item-inner">
+                    <span class="goption-number">02</span>
+                    <span class="goption-title">Analytical Identity and Purity Testing</span>
+                </div>
+            </div>
+
+            <div class="gcenter-image">
+                <div class="gring"></div> <img src="dsip-10g.png" alt="DSIP Vial">
+            </div>
+
+            <div class="goption-item gleft gbottom" onclick="openPopup(2)">
+                <div class="goption-item-inner">
+                    <span class="goption-number">03</span>
+                    <span class="goption-title">Endotoxin (LPS) Testing and Contamination Control</span>
+                </div>
+            </div>
+            <div class="goption-item gright gbottom" onclick="openPopup(3)">
+                <div class="goption-item-inner">
+                    <span class="goption-number">04</span>
+                    <span class="goption-title">Batch Traceability and Qualification-Based Release</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="gModal" class="g-modal">
+        <div class="g-modal-content">
+            <span class="g-close" onclick="closePopup()">&times;</span>
+            <h2 id="modalTitle">Title</h2>
+            <p id="modalDescription">Description goes here...</p>
+        </div>
+    </div>
+
+<style>
+
+.ginfographic-wrapper{
+    width: 900px;
+    height: 900px;
+    margin: auto;
+    background-image: url(dsip-bg-1.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: gpulse-2 7s ease-in-out 2s infinite;
+}
+
+.ginfographic-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+}
+.goption-item-inner {
+    background: aliceblue;
+    display: flex;
+    width: 250px;
+    gap: 6px;
+    border-radius: 30px;
+    align-items: center;
+    justify-content: end;
+}
+.goption-item::after {
+    content: "";
+    position: absolute;
+    width: 80px;
+    height: 50px;
+    background-image: url(shape-2.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+/* 01 - Top Left: Pointing Right & Down */
+.goption-item.gleft.gtop:after {
+    left: 93%;
+    top: 45%;
+    /* Default orientation usually works here depending on your asset */
+}
+
+/* 02 - Top Right: Pointing Left & Down */
+.goption-item.gright.gtop:after {
+    right: 93%;
+    top: 45%;
+    transform: scaleX(-1); /* Flip horizontally to face center */
+}
+
+/* 03 - Bottom Left: Pointing Right & Up */
+.goption-item.gleft.gbottom:after {
+    left: 93%;
+    bottom: 45%;
+    transform: scaleY(-1); /* Flip vertically to face center */
+}
+
+/* 04 - Bottom Right: Pointing Left & Up */
+.goption-item.gright.gbottom:after {
+    right: 93%;
+    bottom: 45%;
+    transform: scaleX(-1) scaleY(-1); /* Flip both ways to face center */
+}
+.gright .goption-item-inner {
+    flex-direction: row-reverse;
+    padding-left: 7px;
+}
+.gleft .goption-item-inner {
+    padding-right: 7px;
+}
+span.goption-number {
+    width: 45px;
+    height: 45px;
+    background: #000;
+    color: #fff;
+    border-radius: 40px;
+    text-align: center;
+    line-height: 45px;
+    font-weight: 900;
+    /* display: block; */
+    flex: 0 0 45px;
+}
+span.goption-title {
+    font-size: 14px;
+}
+.goption-item img {
+    width: 100% !important;
+}
+.gcenter-image {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+/* The concentric circle effect */
+.gring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+}
+
+.gcenter-image img {
+    position: relative;
+    z-index: 1;
+    height: 420px;
+    animation: gpulse-1 7s ease-in-out 2s infinite;
+    pointer-events: none;
+}
+
+/* Label Styling */
+
+/* Position circles on left or right */
+.gleft { justify-self: start; padding-left: 0px;text-align:left; }
+.gleft::before { left: 0px; }
+
+.gright {
+    justify-self: end;
+    padding-right: 0px;
+    text-align: right;
+}
+.gright::before { right: 0px; }
+
+
+/* Update Modal to Flexbox for perfect centering */
+.g-modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    justify-content: center; /* Center horizontally */
+    align-items: center;     /* Center vertically */
+}
+
+/* Modal Content tweaks */
+.g-modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 450px;
+    color: #333;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+/* Hover effect for the buttons */
+.goption-item {
+    cursor: pointer;
+    transition: transform 0.3s ease; 
+}
+
+.goption-item:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+.gcenter-image, .goption-item {
+    will-change: transform, opacity;
+}
+
+.ginfographic-container {
+    overflow: visible !important;
+}
+
+.goption-item.gleft.gtop{
+    transform: translate(-65px, -80px);
+}
+.goption-item.gright.gtop{
+    transform: translate(65px, -80px);
+}
+.goption-item.gleft.gbottom{
+    transform: translate(-65px, 80px);
+}
+.goption-item.gright.gbottom{
+    transform: translate(65px, 80px);
+}
+
+.g-close {
+    position: absolute;
+    top: 8px;
+    right: 6px;
+    font-size: 30px;
+    cursor: pointer;
+}
+#modalTitle {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+#modalDescription {
+    font-size: 17px;
+    line-height: 22px;
+}
+
+@keyframes gpulse-1 {
+    0% { transform: translateY(0px);}
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+@keyframes gpulse-2 {
+    0% { transform: scale(1);}
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+@media (min-width: 701px) and (max-width: 950px) {
+    .ginfographic-wrapper{
+        width: 700px;
+        height: 700px;
+    }
+    .ginfographic-container {
+        height: calc(700px - 250px);
+        width: 700px;
+        position: relative;
+    }
+.goption-item.gleft.gtop::after {
+    left: 90%;
+}
+.goption-item.gright.gtop::after {
+    right: 90%;
+}
+.goption-item.gleft.gbottom::after {
+    left: 90%;
+}
+.goption-item.gright.gbottom::after {
+    right: 90%;
+}
+    .gcenter-image img {
+        height: 320px;
+    }
+    .goption-item {
+        width: 252px;
+        position: absolute;
+    }
+    .goption-item.gleft.gtop{
+        transform: translate(0px, 0px);
+        top:0;
+        left: 0px;
+    }
+    .goption-item.gright.gtop{
+        transform: translate(0px, 0px);
+        right: 0;
+        top: 0;
+    }
+    .goption-item.gleft.gbottom{
+        transform: translate(0px, 0px);
+        bottom: 0;
+        left:0;
+    }
+    .goption-item.gright.gbottom{
+        transform: translate(0px, 0px);
+        right:0;
+        bottom: 0;
+    }
+}
+
+@media (min-width: 501px) and (max-width: 700px) {
+    .ginfographic-wrapper{
+        width: 500px;
+        height: 500px;
+    }
+    .ginfographic-container {
+        height: calc(500px - 70px);
+        width: 500px;
+        position: relative;
+    }
+    .goption-item::after {
+    width: 68px;
+    height: 50px;
+}
+.goption-item.gleft.gtop::after {
+    left: 90%;
+}
+.goption-item.gright.gtop::after {
+    right: 90%;
+}
+.goption-item.gleft.gbottom::after {
+    left: 90%;
+}
+.goption-item.gright.gbottom::after {
+    right: 90%;
+}
+    .gcenter-image img {
+        height: 210px;
+    }
+    .goption-item {
+        width: 210px;
+        position: absolute;
+    }
+    .goption-item.gleft.gtop{
+        transform: translate(0px, 0px);
+        top:0;
+        left: 0px;
+    }
+    .goption-item.gright.gtop{
+        transform: translate(0px, 0px);
+        right: 0;
+        top: 0;
+    }
+    .goption-item.gleft.gbottom{
+        transform: translate(0px, 0px);
+        bottom: 0;
+        left:0;
+    }
+    .goption-item.gright.gbottom{
+        transform: translate(0px, 0px);
+        right:0;
+        bottom: 0;
+    }
+    span.goption-title {
+        font-size: 12px !important;
+        line-height: 15px;
+    }
+    span.goption-number {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    flex: 0 0 35px;
+}
+.goption-item-inner {
+    width: 210px;
+}
+}
+
+@media (max-width: 500px) {
+    .ginfographic-wrapper{
+        width: 280px;
+        height: 280px;
+    }
+    .ginfographic-container {
+        height: calc(280px - 20px);
+        width: 280px;
+        position: relative;
+    }
+    .goption-item::after {
+    width: 40px;
+height: 26px;
+}
+.goption-item.gleft.gtop::after {
+    left: 90%;
+}
+.goption-item.gright.gtop::after {
+    right: 90%;
+}
+.goption-item.gleft.gbottom::after {
+    left: 90%;
+}
+.goption-item.gright.gbottom::after {
+    right: 90%;
+}
+    .gcenter-image img {
+        height: 110px;
+    }
+    .goption-item {
+        width: 135px;
+        position: absolute;
+    }
+    .goption-item.gleft.gtop{
+        transform: translate(0px, 0px);
+        top:0;
+        left: -35px;
+    }
+    .goption-item.gright.gtop{
+        transform: translate(0px, 0px);
+        right: -35px;
+        top: 0;
+    }
+    .goption-item.gleft.gbottom{
+        transform: translate(0px, 0px);
+        bottom: 0;
+        left:-35px;
+    }
+    .goption-item.gright.gbottom{
+        transform: translate(0px, 0px);
+        right:-35px;
+        bottom: 0;
+    }
+    span.goption-title {
+        font-size: 11px !important;
+        line-height: 14px;
+    }
+span.goption-number{
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    flex: 0 0 22px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: -30px;
+    position: relative;
+    top: -27px;
+}
+.goption-item-inner {
+    width: 135px;
+    flex-direction: column !important;
+    padding: 12px 5px 6px !important;
+    border-radius: 10px;
+}
+.gleft .goption-item-inner {
+    padding-right: 0px;
+    align-items: start;
+}
+.gright .goption-item-inner {
+    align-items: end;
+}
+}
+
+</style>
+</section>
+
+</body>
+</html>

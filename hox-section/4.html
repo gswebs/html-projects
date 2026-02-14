@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<section>
+    <div class="ginfographic-wrapper">
+        <div class="ginfographic-container">
+            <div class="goption-item gleft gtop" onclick="openPopup(0)"><img src="https://noxpeptides.ca/wp-content/uploads/2026/02/Group-24.png" title="In-Lab Synthesis and Controlled Harvesting"></div>
+            <div class="goption-item gright gtop" onclick="openPopup(1)"><img src="https://noxpeptides.ca/wp-content/uploads/2026/02/Group-25.png" title="Analytical Identity and Purity Testing"></div>
+
+            <div class="gcenter-image">
+                <div class="gring"></div> <img src="https://noxpeptides.ca/wp-content/uploads/2026/02/dsip-10g.png" alt="DSIP Vial">
+            </div>
+
+            <div class="goption-item gleft gbottom" onclick="openPopup(2)"><img src="https://noxpeptides.ca/wp-content/uploads/2026/02/Group-22.png" title="Endotoxin (LPS) Testing and Contamination Control"></div>
+            <div class="goption-item gright gbottom" onclick="openPopup(3)"><img src="https://noxpeptides.ca/wp-content/uploads/2026/02/Group-23.png" title="Batch Traceability and Qualification-Based Release"></div>
+        </div>
+    </div>
+    <div id="gModal" class="g-modal">
+        <div class="g-modal-content">
+            <span class="g-close" onclick="closePopup()">&times;</span>
+            <h2 id="modalTitle">Title</h2>
+            <p id="modalDescription">Description goes here...</p>
+        </div>
+    </div>
+
+<style>
+
+.ginfographic-wrapper{
+    width: 800px;
+    height: 800px;
+    margin: auto;
+    background-image: url(https://noxpeptides.ca/wp-content/uploads/2026/02/dsip-bg-1.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: gpulse-2 7s ease-in-out 2s infinite;
+}
+
+    .ginfographic-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+}
+.goption-item img {
+    width: 100% !important;
+}
+.gcenter-image {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* The concentric circle effect */
+.gring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.gcenter-image img {
+    position: relative;
+    z-index: 1;
+    height: 420px;
+    animation: gpulse-1 7s ease-in-out 2s infinite;
+    pointer-events: none;
+}
+
+/* Label Styling */
+
+
+/* Position circles on left or right */
+.gleft { justify-self: start; padding-left: 0px;text-align:left; }
+.gleft::before { left: 0px; }
+
+.gright {
+    justify-self: end;
+    padding-right: 0px;
+    text-align: right;
+}
+.gright::before { right: 0px; }
+
+
+/* Update Modal to Flexbox for perfect centering */
+.g-modal {
+  display: none; 
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+}
+
+/* Modal Content tweaks */
+.g-modal-content {
+  background-color: #fefefe;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 450px;
+  color: #333;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+/* Hover effect for the buttons */
+.goption-item {
+  cursor: pointer;
+  transition: transform 0.3s ease; 
+}
+
+.goption-item:hover {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+}
+
+.gcenter-image, .goption-item {
+  will-change: transform, opacity;
+}
+
+.ginfographic-container {
+  overflow: visible !important;
+}
+
+.goption-item.gleft.gtop{
+    transform: translate(0px, -50px);
+}
+.goption-item.gright.gtop{
+    transform: translate(0px, -50px);
+}
+.goption-item.gleft.gbottom{
+    transform: translate(0px, 50px);
+}
+.goption-item.gright.gbottom{
+    transform: translate(0px, 50px);
+}
+
+.g-close {
+    position: absolute;
+    top: 8px;
+    right: 6px;
+    font-size: 30px;
+    cursor: pointer;
+}
+#modalTitle {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+#modalDescription {
+    font-size: 17px;
+    line-height: 22px;
+}
+
+@keyframes gpulse-1 {
+    0% { transform: translateY(0px);}
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+@keyframes gpulse-2 {
+    0% { transform: scale(1);}
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+    .ginfographic-wrapper{
+        width: 550px;
+        height: 550px;
+    }
+    .gcenter-image img {
+        height: 235px;
+    }
+    .goption-item {
+        width: 215px;
+    }
+    .goption-item.gleft.gtop{
+        transform: translate(-20px, -63px);
+    }
+    .goption-item.gright.gtop{
+        transform: translate(20px, -63px);
+    }
+    .goption-item.gleft.gbottom{
+        transform: translate(-20px, 63px);
+    }
+    .goption-item.gright.gbottom{
+        transform: translate(20px, 63px);
+    }
+}
+
+@media (max-width: 600px) {
+    .ginfographic-wrapper{
+        width: 280px;
+        height: 280px;
+    }
+    .gcenter-image {
+        z-index: 2;
+        width: 90px;
+    }
+
+    .gcenter-image img {
+        height: 170px;
+    }
+    .goption-item {
+        width: 180px;
+        z-index: 1;
+    }
+    .goption-item.gleft.gtop{
+        transform: translate(60px, -6px);
+    }
+    .goption-item.gright.gtop{
+        transform: translate(-60px, -6px);
+    }
+    .goption-item.gleft.gbottom{
+        transform: translate(60px, 6px);
+    }
+    .goption-item.gright.gbottom{
+        transform: translate(-60px, 6px);
+    }
+}
+
+</style>
+</section>
+
+</body>
+</html>

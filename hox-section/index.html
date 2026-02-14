@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Cinematic Scroll Experience</title>
+
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+body{
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+section{
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+h1{
+  font-size:clamp(48px,8vw,120px);
+  text-align:center;
+  line-height:1;
+}
+
+.snap{
+  scroll-snap-align:start;
+}
+
+.story{
+  position:relative;
+  overflow:hidden;
+}
+
+video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.9));
+}
+
+.product-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.phone{
+  width:300px;
+  transition:transform .5s ease;
+}
+
+.frame-seq img{
+  width:420px;
+}
+
+.spacer{
+  height:200vh;
+}
+
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="snap">
+  <h1>Designed for Motion</h1>
+</section>
+
+<!-- VIDEO SCROLL CONTROL -->
+<section class="story snap">
+  <video id="scrollVideo" muted playsinline>
+    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+</section>
+
+<!-- PRODUCT ZOOM -->
+<section class="snap">
+  <div class="product-wrap">
+    <img class="phone" src="https://pngimg.com/uploads/iphone_13/iphone_13_PNG36.png">
+    <h1>iPhone Zoom</h1>
+  </div>
+</section>
+
+<!-- FRAME BY FRAME -->
+<section class="snap">
+  <div class="frame-seq">
+    <img id="frameImg" src="https://dummyimage.com/600x1200/111/fff&text=Frame+1">
+  </div>
+</section>
+
+<div class="spacer"></div>
+
+<script>
+/* LENIS */
+const lenis = new Lenis({
+  smooth:true,
+  duration:1.2
+});
+
+function raf(time){
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+lenis.on('scroll',()=>window.dispatchEvent(new Event('scroll')));
+
+/* GSAP */
+gsap.registerPlugin(ScrollTrigger);
+
+/* VIDEO SCROLL CONTROL */
+const video = document.getElementById("scrollVideo");
+video.pause();
+
+ScrollTrigger.create({
+  trigger: ".story",
+  start: "top top",
+  end: "bottom top",
+  scrub: true,
+  onUpdate:self=>{
+    video.currentTime = self.progress * video.duration;
+  }
+});
+
+/* IPHONE ZOOM */
+gsap.to(".phone",{
+  scale:1.8,
+  scrollTrigger:{
+    trigger:".product-wrap",
+    start:"top center",
+    end:"bottom center",
+    scrub:true
+  }
+});
+
+/* FRAME BY FRAME */
+const frames = 60;
+ScrollTrigger.create({
+  trigger:".frame-seq",
+  start:"top center",
+  end:"bottom top",
+  scrub:true,
+  onUpdate:self=>{
+    let frame = Math.floor(self.progress * frames) + 1;
+    document.getElementById("frameImg").src =
+      `https://dummyimage.com/600x1200/111/fff&text=Frame+${frame}`;
+  }
+});
+
+</script>
+
+</body>
+</html>
