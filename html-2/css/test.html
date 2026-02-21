@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Random Class Toggle</title>
+  <style>
+    body {
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 80px);
+      gap: 10px;
+    }
+
+    .box {
+      width: 80px;
+      height: 80px;
+      background-color: #e5e7eb;
+      border-radius: 0.5rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .box.active {
+      background-color: #4f46e5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="grid" id="grid">
+    <!-- 25 Boxes -->
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+    <div class="box"></div>
+  </div>
+
+  <script>
+    const boxes = document.querySelectorAll('.box');
+
+    function getRandomIndex(isEven = true) {
+      let eligible = [];
+      boxes.forEach((box, index) => {
+        if ((index % 2 === 0 && isEven) || (index % 2 !== 0 && !isEven)) {
+          eligible.push(index);
+        }
+      });
+      return eligible[Math.floor(Math.random() * eligible.length)];
+    }
+
+    function toggleRandomClass() {
+      const isEven = Math.random() > 0.5;
+      const index = getRandomIndex(isEven);
+      boxes[index].classList.toggle('active');
+    }
+
+    // Toggle class at random intervals
+    setInterval(() => {
+      toggleRandomClass();
+    }, Math.floor(Math.random() * 2000) + 1000); // 1–3 seconds
+  </script>
+
+</body>
+</html>

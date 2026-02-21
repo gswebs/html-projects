@@ -42,6 +42,7 @@
         </div>
     </div>
     <div id="gModal" class="g-modal">
+        <div class="g-modal-loader"></div> <!-- loader -->
         <div class="g-modal-content">
             <span class="g-close" onclick="closePopup()">&times;</span>
             <h2 id="modalTitle">Title</h2>
@@ -184,28 +185,57 @@ span.goption-title {
 
 /* Update Modal to Flexbox for perfect centering */
 .g-modal {
-    display: none; 
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
-    justify-content: center; /* Center horizontally */
-    align-items: center;     /* Center vertically */
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 9999;
 }
 
-/* Modal Content tweaks */
+.g-modal.show {
+  display: flex;
+  opacity: 1;
+}
+
 .g-modal-content {
-    background-color: #fefefe;
-    padding: 20px;
-    border-radius: 10px;
-    width: 100%;
-    max-width: 450px;
-    color: #333;
-    position: relative;
-    text-align: center;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  transform: scale(0.8) translateY(30px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(.25,.46,.45,.94), opacity 0.4s cubic-bezier(.25,.46,.45,.94);
+}
+
+.g-modal.show .g-modal-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Loader */
+.g-modal-loader {
+border: 5px solid var(--e-a-dark-bg);
+border-top: 5px solid var(--primary);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: gspin 1s linear infinite;
+  position: absolute;
+  z-index: 10;
+  display: none; /* hidden initially */
+}
+
+@keyframes gspin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Hover effect for the buttons */
@@ -472,5 +502,84 @@ span.goption-number{
 </style>
 </section>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+  const observers = {};
+
+  function observe(el, threshold = 0.25) {
+    if (!observers[threshold]) {
+      observers[threshold] = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("gactive");
+            observer.unobserve(entry.target); // stop observing → triggers only once
+          }
+        });
+      }, { threshold });
+    }
+
+    observers[threshold].observe(el);
+  }
+
+  document.querySelectorAll(".gbox, .gsap-text-zoom").forEach(el => {
+    const threshold = parseFloat(el.dataset.threshold) || 0.25;
+    observe(el, threshold);
+  });
+
+});
+
+// --- POPUP LOGIC (Outside DOMContentLoaded to stay global) ---
+const popupData = [
+  { title: "In-Lab Synthesis and Controlled Harvesting", desc: "Peptides are synthesized internally using validated cell culture and yeast-based expression systems. Growth parameters, expression windows, and harvest timing are controlled to ensure structural integrity, sequence fidelity, and batch uniformity." },
+  { title: "Analytical Identity and Purity Testing", desc: "Each batch undergoes analytical verification to confirm molecular identity, purity, and composition against predefined specifications prior to qualification for release." },
+  { title: "Endotoxin (LPS) Testing and Contamination Control", desc: "Endotoxin (LPS) levels are measured as part of the quality control process to ensure contamination remains within established laboratory thresholds appropriate for controlled research and performance applications." },
+  { title: "Batch Traceability and Qualification-Based Release", desc: "Production data, analytical results, and quality documentation are maintained at the batch level. Material is released only upon meeting all predefined synthesis and testing criteria; non-conforming batches are rejected." }
+];
+
+function openPopup(index) {
+    const modal = document.getElementById("gModal");
+    const content = document.querySelector(".g-modal-content");
+    const loader = document.querySelector(".g-modal-loader");
+
+    if (!modal || !content || !loader) return;
+
+    // Set modal content
+    document.getElementById("modalTitle").innerText = popupData[index].title;
+    document.getElementById("modalDescription").innerText = popupData[index].desc;
+
+    // Show modal & loader
+    modal.classList.add("show");
+    loader.style.display = "block";
+    content.style.opacity = 0; // hide content initially
+
+    // Simulate loading (e.g., 800ms)
+    setTimeout(() => {
+        loader.style.display = "none";  // hide loader
+        content.style.opacity = 1;       // show content
+        content.style.transform = "scale(1) translateY(0)";
+    }, 800);
+}
+
+function closePopup() {
+    const modal = document.getElementById("gModal");
+    const content = document.querySelector(".g-modal-content");
+
+    if (!modal || !content) return;
+
+    modal.classList.remove("show");
+    content.style.opacity = 0; // reset content opacity
+    content.style.transform = "scale(0.8) translateY(30px)";
+}
+
+// Close on outside click
+window.addEventListener("click", function(event) {
+  const modal = document.getElementById("gModal");
+  if (event.target === modal) {
+    closePopup();
+  }
+});
+</script>
 </body>
 </html>

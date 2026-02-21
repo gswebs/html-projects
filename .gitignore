@@ -29,3 +29,7 @@ Thumbs.db
 # Mac / Linux system files
 *.bak
 *.orig
+
+# Git itself
+.gitignore
+.gitattributes

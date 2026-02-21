@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peptide Dosage Calculator</title>
+
+<style>
+    :root {
+        --pc-primary-color: #04a8bb;
+        --pc-color-f9f9f966: #f9f9f966;
+        --pc-white: #fff;
+        --pc-color-181818: #181818;
+        --pc-color-ddd: #ddd;
+        --pc-color-F9F9F9: #f9f9f9;
+        --pc-color-333: #333;
+        --pc-color-e1fbff: #e1fbff;
+        --pc-color-f7feff: #f7feff;
+        --pc-color-1f2937: #1f2937;
+        --pc-color-ff3b3b: #ff3b3b; 
+        --pc-color-000000: #000000;
+    }
+.peptide-calculator {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 25px;
+    border-radius: 14px;
+    background: var(--pc-white);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    border: 1px solid var(--pc-primary-color);
+}
+.peptide-calculator h3 {
+    color: var(--pc-primary-color);
+    margin-block: 7px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.peptide-calculator h4 {
+    margin-block: 7px;
+}
+
+.calc-group {
+    margin-bottom: 22px;
+    background-color: var(--pc-color-F9F9F9);
+    border: 1px solid var(--pc-color-ddd);
+    border-radius: 10px;
+    padding: 10px;
+}
+.cal-item{display:flex;gap:10px;align-items:center;}
+.cal-item select, .cal-item input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--pc-color-ddd);
+    background: var(--pc-white);
+    color: var(--pc-color-181818);
+    height: 30px;
+    font-size: 14px;
+}
+
+.cal-input-custom{display:none;gap:6px;align-items:center;}
+.cal-input-custom span{opacity:.7}
+
+.cal-unit{display:flex;justify-content:space-between;margin-bottom:12px}
+.unit-toggle span{
+  cursor:pointer;
+  padding:6px 12px;
+  border:1px solid var(--pc-color-333);
+  border-radius:6px;
+}
+.unit-toggle span.active{
+  background:var(--pc-primary-color);
+  color:var(--pc-color-000000);
+  border-color:var(--pc-primary-color);
+}
+
+.calc-results{
+  margin-top:20px;
+  padding:15px;
+  background: var(--pc-color-e1fbff);
+  border:1px solid var(--pc-primary-color);
+  border-radius:10px;
+}
+
+.calc-results span{
+  color: var(--pc-primary-color);
+  font-weight:700;
+}
+
+/* Results */
+.calc-output {
+    margin-top: 40px;
+    padding: 25px;
+    border-radius: 14px;
+    background: rgba(4, 168, 187, 0.16);
+    border: 1px solid var(--pc-primary-color);
+}
+
+.cal-form-desc {
+    margin-top: 25px;
+    padding: 15px;
+    background: var(--pc-color-f9f9f966);
+    border: 1px solid var(--pc-color-ddd);
+    border-radius: 10px;
+    line-height: 1.7lh;
+}
+
+.cal-form-desc h3 {
+    font-size: 24px;
+}
+
+.calc-output h2{text-align:center}
+
+.result-unit {
+    text-align: center;
+    font-size: 38px;
+    margin: 15px 0 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.result-unit span{
+    color: var(--pc-primary-color);
+    font-weight:800;
+}
+
+.cal-form {
+    position: relative;
+    margin: 45px auto;
+    border: 2px solid var(--pc-color-1f2937);
+    border-radius: 10px;
+    max-width: 90%;
+    background-color: var(--pc-white);
+}
+
+.cal-form-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    padding: 10px;
+}
+
+.cal-form-item span {
+    position: relative;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.cal-form-item span::before {
+    content: "";
+    width: 3px;
+    height: 30px;
+    background-color: var(--pc-color-000000);
+    border-radius: 2px;
+}
+
+.cal-form-item > span:nth-child(2n)::before {
+    width: 2px;
+    height: 18px;
+}
+
+.cal-form-line{
+    position:absolute;
+    width: 4px;
+    height: 120%;
+    border-radius: 20px;
+    top: -10%;
+    left: 10%;
+    background: var(--pc-color-ff3b3b);
+    border-radius:3px;
+    left:0;
+    transition:0.35s cubic-bezier(.4,0,.2,1);
+}
+
+.cal-form-desc ol{
+    padding-left:20px;
+}
+
+.highlight{
+    color: var(--pc-primary-color);
+    font-weight:700;
+}
+</style>
+</head>
+
+<body>
+
+<div class="peptide-calculator">
+
+  <!-- Syringe Volume -->
+  <div class="calc-group">
+    <h4>Volume of Injection Syringe</h4>
+    <div class="cal-item">
+      <select id="syringe">
+        <option value="0.3">0.3ml</option>
+        <option value="0.5" selected>0.5ml</option>
+        <option value="1">1ml</option>
+      </select>
+
+      <div class="syringe-custom cal-input-custom">
+        <input type="number" id="syringeCustom" placeholder="Enter volume">
+        <span>ml</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Peptide Quantity -->
+  <div class="calc-group">
+    <h4>Peptide Vial Quantity</h4>
+    <div class="cal-item">
+      <select id="peptide">
+        <option value="5" selected>5mg</option>
+        <option value="10">10mg</option>
+        <option value="15">15mg</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <div class="peptide-custom cal-input-custom">
+        <input type="number" id="peptideCustom" placeholder="Enter quantity" min="1" max="20" step="any">
+        <span>mg</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Water Added -->
+  <div class="calc-group">
+    <h4>Bacteriostatic Water Added</h4>
+    <div class="cal-item">
+      <select id="bacteriostatic">
+        <option value="1" selected>1ml</option>
+        <option value="2">2ml</option>
+        <option value="3">3ml</option>
+        <option value="5">5ml</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <div class="bacteriostatic-custom cal-input-custom">
+        <input type="number" id="bacteriostaticCustom" placeholder="Enter volume" min="1" max="10" step="any">
+        <span>ml</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desired Dose -->
+  <div class="calc-group">
+    <h4>Desired Peptide Dose</h4>
+
+    <div class="cal-unit">
+      <span>Unit:</span>
+      <div class="unit-toggle">
+        <span class="active" data-unit="mcg">Mcg</span>
+        <span data-unit="mg">Mg</span>
+      </div>
+    </div>
+
+    <div class="cal-item cal-mcg-item">
+      <select id="dose-mcg">
+        <option value="50">50mcg</option>
+        <option value="100" selected>100mcg</option>
+        <option value="250">250mcg</option>
+        <option value="500">500mcg</option>
+        <option value="1000">1000mcg</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <div class="dose-mcg-custom cal-input-custom">
+        <input type="number" id="doseMcgCustom" placeholder="Enter dose in mcg">
+        <span>mcg</span>
+      </div>
+    </div>
+
+    <div class="cal-item cal-mg-item" style="display:none">
+      <select id="dose-mg">
+        <option value="0.05">0.05mg</option>
+        <option value="0.1" selected>0.1mg</option>
+        <option value="0.25">0.25mg</option>
+        <option value="0.5">0.5mg</option>
+        <option value="1">1mg</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <div class="dose-mg-custom cal-input-custom">
+        <input type="number" id="doseMgCustom" placeholder="Enter dose in mg">
+        <span>mg</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="calc-output">
+
+  <h2>Your Dosage</h2>
+
+  <h3 class="result-unit">
+    Draw to <span id="drawUnits">0</span> Units
+  </h3>
+
+  <div class="cal-form">
+    <div class="cal-form-item">
+      <span>0</span><span>5</span><span>10</span><span>15</span><span>20</span>
+      <span>25</span><span>30</span><span>35</span><span>40</span><span>45</span><span>50</span>
+    </div>
+    <span class="cal-form-line" id="needleLine"></span>
+  </div>
+
+  <div class="cal-form-desc">
+    <h3>Instructions:</h3>
+    <ol>
+      <li>
+        Reconstitute your peptide with 
+        <strong><span id="waterAmount" class="highlight"></span></strong>
+        bacteriostatic water
+      </li>
+      <li>
+        Draw to exactly 
+        <strong><span id="unitsAmount" class="highlight"></span></strong>
+        on your syringe as shown by the red line
+      </li>
+      <li>
+        This provides a dose of 
+        <strong><span id="doseAmount" class="highlight"></span></strong>
+      </li>
+      <li>
+        Once mixed with Bacteriostatic water Refrigerate 
+        <strong><span class="highlight">2°C – 8°C</span></strong>
+      </li>
+      <li>
+        Use within 
+        <strong><span class="highlight">45 days</span></strong>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  // Unit toggle
+  document.querySelectorAll('.unit-toggle span').forEach(btn => {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.unit-toggle span').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      if (this.dataset.unit === 'mcg') {
+        document.querySelector('.cal-mcg-item').style.display = 'flex';
+        document.querySelector('.cal-mg-item').style.display  = 'none';
+      } else {
+        document.querySelector('.cal-mcg-item').style.display = 'none';
+        document.querySelector('.cal-mg-item').style.display  = 'flex';
+      }
+
+      calculate();
+    });
+  });
+
+  // Custom field toggles
+  toggleCustom('syringe','syringeCustom');
+  toggleCustom('peptide','peptideCustom');
+  toggleCustom('bacteriostatic','bacteriostaticCustom');
+  toggleCustom('dose-mcg','doseMcgCustom');
+  toggleCustom('dose-mg','doseMgCustom');
+
+  function toggleCustom(selectID,inputID){
+    const select = document.getElementById(selectID);
+    const input  = document.getElementById(inputID);
+    if(!select || !input) return;
+
+    select.addEventListener('change', ()=>{
+      input.parentElement.style.display = select.value === 'custom' ? 'flex' : 'none';
+      calculate();
+    });
+  }
+
+  document.querySelectorAll('select,input').forEach(el=>{
+    el.addEventListener('input', calculate);
+  });
+
+  function calculate(){
+
+    let syringe = getVal('syringe','syringeCustom');
+    let peptide = getVal('peptide','peptideCustom');
+    let water   = getVal('bacteriostatic','bacteriostaticCustom');
+
+    let activeUnit = document.querySelector('.unit-toggle span.active').dataset.unit;
+    let dose = activeUnit === 'mcg' 
+      ? getVal('dose-mcg','doseMcgCustom') 
+      : getVal('dose-mg','doseMgCustom') * 1000;
+
+    if(!peptide || !water || !dose) return;
+
+    let totalMcg = peptide * 1000;
+    let concentration = totalMcg / water;
+    let injectionMl = dose / concentration;
+    let injectionIU = injectionMl * 100;
+
+    renderResult(concentration, injectionMl, injectionIU);
+  }
+
+  function getVal(selectID,inputID){
+    let select = document.getElementById(selectID);
+    let input  = document.getElementById(inputID);
+
+    if(!select) return 0;
+
+    return select.value === 'custom'
+      ? parseFloat(input.value || 0)
+      : parseFloat(select.value);
+  }
+
+  
+  function renderResult(conc, ml, iu){
+    let drawUnits = parseFloat(iu.toFixed(1));
+
+    document.getElementById('drawUnits').innerText = drawUnits;
+    document.getElementById('unitsAmount').innerText = drawUnits + ' units';
+
+    let activeUnit = document.querySelector('.unit-toggle span.active').dataset.unit;
+
+    let dose =
+        activeUnit === 'mcg'
+        ? getVal('dose-mcg','doseMcgCustom') + ' mcg'
+        : getVal('dose-mg','doseMgCustom') + ' mg';
+
+    document.getElementById('doseAmount').innerText = dose;
+
+    let water =
+        document.getElementById('bacteriostatic').value === 'custom'
+        ? document.getElementById('bacteriostaticCustom').value
+        : document.getElementById('bacteriostatic').value;
+
+    document.getElementById('waterAmount').innerText = water + ' ml';
+
+    updateSyringeScale(drawUnits);
+    }
+
+    function updateSyringeScale(drawUnits){
+        // Get selected syringe volume
+        let syringeMl = getVal('syringe','syringeCustom');
+
+        // Max IU for syringe
+        let maxIU = syringeMl * 100; // 0.3 → 30, 0.5 → 50, 1 → 100
+
+        // Decide step based on syringe
+        let step = 5;
+        if(syringeMl === 1) step = 10; // 1ml syringe → 10 IU step
+
+        let scale = document.querySelector('.cal-form-item');
+        let needle = document.getElementById('needleLine');
+
+        // Clear existing scale
+        scale.innerHTML = '';
+
+        // Build ticks
+        for(let i = 0; i <= maxIU; i += step){
+                let span = document.createElement('span');
+                span.textContent = i;
+                scale.appendChild(span);
+            }
+
+        // Move red indicator line
+        let percent = Math.min((drawUnits / maxIU) * 100, 100);
+        needle.style.left = `calc(${percent}% + 10px)`;
+    }
+
+    calculate();
+
+});
+</script>
+
+</body>
+</html>
